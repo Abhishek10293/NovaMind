@@ -26,3 +26,34 @@ export const CreateUser = mutation({
     return user[0];
   }
 });
+
+export const GetUser = query({
+  args : {
+    email : v.string()
+  },
+  handler : async (ctx , args) => {
+    const user = await ctx.db.query('users').filter(q => q.eq(q.field('email') , args.email)).collect();
+    
+    return user[0];
+  }
+});
+
+export const UpdateTokens = mutation({
+  args: {
+    credits: v.number(),
+    uid: v.id("users"),
+    orderId: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const updateData: any = {
+      credits: args.credits,
+    };
+
+    if ('orderId' in args) {
+      // Unset the field if orderId is undefined or empty string
+      updateData.orderId = args.orderId === "" ? undefined : args.orderId;
+    }
+
+    await ctx.db.patch(args.uid, updateData);
+  },
+});

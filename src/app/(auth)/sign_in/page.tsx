@@ -1,21 +1,37 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/src/components/ui/button";
 import Image from "next/image"
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from "axios";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { GetAuthUserData } from "@/src/Services/GlobalApi";
+import { useContext } from "react";
+import { AuthContext } from "@/context/authcontext";
+import { useRouter } from 'next/navigation';
+
 
 export default function SignInPage() {
-
+const CreateUser=useMutation(api.users.CreateUser);
+const {user,setUser}=useContext(AuthContext);
+const router=useRouter();
 const googleLogin = useGoogleLogin({
   onSuccess: async (tokenResponse) => {
     console.log(tokenResponse);
-    const userInfo = await axios.get(
-      'https://www.googleapis.com/oauth2/v3/userinfo',
-      { headers: { Authorization: 'Bearer'+ tokenResponse.access_token } },
-    );
-
-    console.log(userInfo);
+    if(typeof window !== 'undefined'){
+    localStorage.setItem('user_token', tokenResponse.access_token);
+    }
+   const user=await GetAuthUserData(tokenResponse.access_token);
+    console.log(user);
+    const result=await CreateUser({
+      name:user?.name,
+      email:user?.email,
+      picture:user.picture
+    })
+    setUser(result);
+    router.replace('/ai_assistance')
+    console.log(result);
   },
   onError: errorResponse => console.log(errorResponse),
 });
