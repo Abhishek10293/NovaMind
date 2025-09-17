@@ -1,18 +1,33 @@
-import React from 'react'
-import Provider from './provider'
+"use client"
 
-function Layout({
+import React from 'react'
+import Header from './_component/Header';
+import Provider from './provider';
+import { usePathname } from 'next/navigation';
+import { ChatInputContext, ChatInputProvider } from '@/context/ChatInputContext';
+import { MessageProvider } from '@/context/MessageContext';
+
+function WorkspaceLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+   
+  const pathName = usePathname();
+  const showHeader = !pathName.startsWith('/workspace');
+
   return (
-    <div>
-      <Provider>
-      {children}
-      </Provider>
-    </div>
+    <Provider>
+      <div>
+        {showHeader && <Header />}
+        <ChatInputProvider>
+          <MessageProvider>
+            {children}
+          </MessageProvider>
+        </ChatInputProvider>
+      </div>
+    </Provider>
   )
 }
 
-export default Layout
+export default WorkspaceLayout

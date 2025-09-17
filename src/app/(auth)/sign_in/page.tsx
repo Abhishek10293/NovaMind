@@ -30,7 +30,7 @@ const googleLogin = useGoogleLogin({
       picture:user.picture
     })
     setUser(result);
-    router.replace('/ai_assistance')
+    router.replace('/ai_assistance');
     console.log(result);
   },
   onError: errorResponse => console.log(errorResponse),

@@ -1,15 +1,34 @@
-import  {Button}  from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar"
+"use client"
+
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+
 export default function Home() {
+
+  const router = useRouter();
+
+  const handleOnClick = () => {
+    router.push('/sign_in');
+  }
+
+
   return (
-
-    <main className="min-h-screen flex flex-col items-center justify-center gap-4">
-  <Button>Click Me</Button>
-  <Avatar>
-    <AvatarImage src="https://github.com/shadcn.png" />
-    <AvatarFallback>CN</AvatarFallback>
-  </Avatar>
-</main>
-
+     <div
+        className="fixed top-0 left-0 w-full h-[100vh] -z-10 bg-cover bg-center transition-opacity duration-500"
+        style={{
+          backgroundImage: "url('/banner.png')",
+        }}
+      >
+        <div
+          className = 'flex justify-center items-center pr-3 mr-10 mt-[80vh]'
+        >
+          <Button 
+            className = 'bg-cyan-300 hover:bg-cyan-500 cursor-pointer'
+            onClick = {handleOnClick}
+          >
+            Get Started
+          </Button>
+        </div>
+      </div>
   );
 }
